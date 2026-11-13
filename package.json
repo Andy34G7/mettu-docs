@@ -1,0 +1,15 @@
+{
+  "name": "mettu-docs",
+  "private": true,
+  "scripts": {
+    "dev": "mettu dev",
+    "build": "mettu build",
+    "preview": "mettu preview",
+    "new": "mettu new",
+    "check": "mettu check",
+    "clean": "mettu clean"
+  },
+  "dependencies": {
+    "@andy34g7/mettu": "^2.0.0"
+  }
+}

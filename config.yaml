@@ -1,0 +1,47 @@
+site_name: "mettu"
+author: "Hemanth Andey"
+base_url: "https://mettu-docs.hemanthandey.dev"
+
+theme:
+  default: "dim"
+  include:
+    - "dim"
+    - "light"
+
+fonts:
+  imports:
+    - "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  families:
+    body: "'Inter', sans-serif"
+    heading: "'Space Grotesk', sans-serif"
+    mono: "'JetBrains Mono', monospace"
+
+syntax:
+  pygments_theme: "native"
+
+markdown:
+  extensions:
+    - fenced_code
+    - codehilite
+    - footnotes
+    - tables
+    - attr_list
+    - sane_lists
+    - md_in_html
+    - toc:
+        permalink: true
+
+images:
+  formats:
+    - webp
+    - jpg
+
+navigation:
+  - name: "Home"
+    url: "/"
+  - name: "Docs"
+    url: "/docs/"
+  - name: "Getting Started"
+    url: "/docs/getting-started/"
+  - name: "Configuration"
+    url: "/docs/configuration/"
