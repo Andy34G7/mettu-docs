@@ -1,0 +1,108 @@
+{% set active_theme = page.theme if page.theme is defined else (site.theme.default if site.theme is defined and site.theme.default is defined else (site.theme if site.theme is defined else "dim")) %}
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ active_theme }}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} | {{ site.site_name }}</title>
+  <meta name="description" content="{{ (page.description or site.description or site.site_name) | e }}">
+  <meta property="og:title" content="{{ (page.title or site.site_name) | e }}">
+  <meta property="og:description" content="{{ (page.description or site.description or site.site_name) | e }}">
+  <meta property="og:type" content="{{ 'article' if page.layout == 'post' else 'website' }}">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.site_name | e }}" href="/feed.xml">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+  {% if site.theme is defined and site.theme.toggle is defined %}
+  <script>
+    (function () {
+      try {
+        var lightTheme = "{{ site.theme.toggle.light }}";
+        var darkTheme = "{{ site.theme.toggle.dark }}";
+        var saved = localStorage.getItem('theme');
+        var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var current = saved || (systemDark ? darkTheme : lightTheme);
+        document.documentElement.setAttribute('data-theme', current);
+      } catch (e) {}
+    })();
+  </script>
+  {% endif %}
+</head>
+
+<body class="pt-20 min-h-screen flex flex-col">
+  <div class="navbar bg-base-100/95 backdrop-blur border-b border-base-300/60 fixed top-0 left-0 z-50 px-4">
+    <div class="flex-1">
+      <a href="/" class="btn btn-ghost text-xl font-bold tracking-tight">{{ site.site_name }}</a>
+    </div>
+    <div class="flex-none flex items-center gap-1">
+      <!-- Desktop Menu -->
+      <ul class="menu menu-horizontal px-1 hidden lg:flex items-center flex-nowrap whitespace-nowrap gap-1">
+        {% for item in site.navigation or [] %}
+        <li><a href="{{ item.url }}" class="whitespace-nowrap">{{ item.name }}</a></li>
+        {% endfor %}
+      </ul>
+
+      <!-- Mobile Hamburger Menu -->
+      <div class="dropdown dropdown-end lg:hidden">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle" aria-label="Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+        </div>
+        <ul tabindex="0" class="menu menu-md dropdown-content mt-3 z-50 p-2 shadow-lg bg-base-200 border border-base-300 rounded-box w-56">
+          {% for item in site.navigation or [] %}
+          <li><a href="{{ item.url }}">{{ item.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% if site.theme is defined and site.theme.toggle is defined %}
+      <label class="btn btn-ghost btn-circle swap swap-rotate ml-1" aria-label="Toggle theme">
+        <input type="checkbox" id="theme-toggle" />
+
+        <!-- sun icon (visible when checked = dark mode, switches to light) -->
+        <svg class="swap-on fill-base-content w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="transform: rotate(-12deg);">
+          <path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,5.64,7.05Zm13.02,9.9a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,18.66,16.95ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,5.64a1,1,0,0,0-1,.29L16.65,6.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.65,8.35l.71-.71a1,1,0,0,0,0-1.41A1,1,0,0,0,18.36,5.64ZM12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Z" />
+        </svg>
+
+        <!-- moon icon (visible when unchecked = light mode, switches to dark) -->
+        <svg class="swap-off fill-base-content w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
+        </svg>
+      </label>
+      <script>
+        (function () {
+          var lightTheme = "{{ site.theme.toggle.light }}";
+          var darkTheme = "{{ site.theme.toggle.dark }}";
+          var toggle = document.getElementById('theme-toggle');
+          var html = document.documentElement;
+          if (!toggle) return;
+
+          var saved = localStorage.getItem('theme');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var current = saved || (systemDark ? darkTheme : lightTheme);
+
+          toggle.checked = (current === darkTheme);
+          html.setAttribute('data-theme', current);
+
+          toggle.addEventListener('change', function () {
+            var next = this.checked ? darkTheme : lightTheme;
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        })();
+      </script>
+      {% endif %}
+    </div>
+  </div>
+
+  <main class="flex-grow container mx-auto p-4 md:p-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6 text-sm opacity-75">
+    Built with <a href="https://github.com/Andy34G7/mettu" class="link">mettu</a>
+  </footer>
+</body>
+
+</html>

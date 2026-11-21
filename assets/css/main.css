@@ -2,3 +2,31 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @import "./generated.daisyui.css";
+
+html {
+  scroll-padding-top: 6rem;
+}
+
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id], :target {
+  scroll-margin-top: 5rem;
+}
+
+.headerlink {
+  margin-left: 0.45rem;
+  opacity: 0;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+h1:hover .headerlink,
+h2:hover .headerlink,
+h3:hover .headerlink,
+h4:hover .headerlink,
+h5:hover .headerlink,
+h6:hover .headerlink {
+  opacity: 0.5;
+}
+
+.headerlink:hover {
+  opacity: 1 !important;
+}

@@ -1,10 +1,8 @@
 ---
 layout: page
-title: "mettu"
+title: "Static site generation, without the friction"
 description: "A hybrid Python and Vite static site generator for personal sites, blogs, and docs."
 ---
-
-# mettu
 
 `mettu` is a static site generator built with Python and Vite. The goal is not to chase synthetic benchmarks, it is to make building and maintaining a static site genuinely pleasant: write Markdown, get Tailwind CSS v4 and DaisyUI v5 out of the box, see changes live while editing, and deploy plain static files.
 

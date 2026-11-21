@@ -4,6 +4,9 @@ base_url: "https://mettu-docs.hemanthandey.dev"
 
 theme:
   default: "dim"
+  toggle:
+    light: "light"
+    dark: "dim"
   include:
     - "dim"
     - "light"
