@@ -11,6 +11,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id], :target {
   scroll-margin-top: 5rem;
 }
 
+/* Heading permalinks: hidden until hover */
 .headerlink {
   margin-left: 0.45rem;
   opacity: 0;
@@ -29,4 +30,72 @@ h6:hover .headerlink {
 
 .headerlink:hover {
   opacity: 1 !important;
+}
+
+/* Clean inline code styling without excessive padding or backticks */
+.prose :not(pre) > code {
+  padding: 0.15em 0.35em;
+  border-radius: 0.3rem;
+  font-size: 0.875em;
+  font-weight: 500;
+  background-color: var(--color-base-200);
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 12%, transparent);
+}
+
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
+}
+
+/* Rounded code blocks and always-legible Copy button (dark + light mode) */
+.prose .highlight,
+.prose .codehilite {
+  border-radius: 0.6rem;
+  overflow: hidden;
+  margin: 1.25rem 0;
+}
+
+.prose .highlight pre,
+.prose .codehilite pre {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+
+.prose .highlight button[aria-label="Copy code"],
+.prose .codehilite button[aria-label="Copy code"] {
+  color: #e5e7eb;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  opacity: 0.8;
+}
+
+.prose .highlight button[aria-label="Copy code"]:hover,
+.prose .codehilite button[aria-label="Copy code"]:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.18);
+  opacity: 1;
+}
+
+/* Fix search input & search button focus ring clipping */
+#docs-search-input,
+#docs-search-input:focus,
+#docs-search-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+#docs-search-modal .modal-box > div:first-child:focus-within {
+  border-bottom-color: var(--color-primary);
+}
+
+aside button[onclick*="docs-search-modal"] {
+  outline-offset: -2px;
+}
+
+/* Active sidebar item highlight (DaisyUI v5 compatibility) */
+.menu a.active {
+  background-color: color-mix(in oklab, var(--color-primary) 15%, transparent);
+  color: var(--color-primary);
 }
