@@ -13,11 +13,11 @@ theme:
 
 fonts:
   imports:
-    - "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    - "https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
   families:
-    body: "'Inter', sans-serif"
-    heading: "'Space Grotesk', sans-serif"
-    mono: "'JetBrains Mono', monospace"
+    body: "'Red Hat Text', sans-serif"
+    heading: "'Red Hat Display', sans-serif"
+    mono: "'Google Sans Code', monospace"
 
 syntax:
   pygments_theme: "native"
