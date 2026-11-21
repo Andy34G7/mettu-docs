@@ -3,17 +3,19 @@ layout: docs
 title: "Getting Started"
 section: "Overview"
 order: 2
-description: "Install @andy34g7/mettu, create the minimal folder structure, and run your first build."
+description: "Install @andy34g7/mettu, create the minimal folder structure, and run your first dev server and build."
 ---
 
 ## Prerequisites
 
-- **Node.js** (v20+)
-- **Python** (3.10+)
+Make sure you have both installed:
 
-## Create a new site
+- **Node.js** v20 or newer
+- **Python** 3.10 or newer (with `venv` support)
 
-Initialize a project and install `@andy34g7/mettu`:
+## 1. Initialize your project
+
+Create a folder for your site and install `@andy34g7/mettu`:
 
 ```bash
 mkdir my-site && cd my-site
@@ -21,7 +23,7 @@ npm init -y
 npm install @andy34g7/mettu
 ```
 
-Add the `mettu` CLI scripts to your `package.json`:
+Update `package.json` so your npm scripts call the `mettu` CLI:
 
 ```json
 {
@@ -41,30 +43,11 @@ Add the `mettu` CLI scripts to your `package.json`:
 }
 ```
 
-## Minimal directory layout
+## 2. Add the starter files
 
-```text
-my-site/
-├── config.yaml
-├── package.json
-├── assets/
-│   └── css/
-│       └── main.css
-├── content/
-│   └── index.md
-└── public/          # Optional static files (CNAME, robots.txt, favicon.svg)
-```
+You only need three files to get a working site: `config.yaml`, `assets/css/main.css`, and `content/index.md`.
 
-Create `assets/css/main.css` so Tailwind CSS v4 and DaisyUI v5 are wired up:
-
-```css
-@import "./generated.fonts.css";
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
-@import "./generated.daisyui.css";
-```
-
-Create a minimal `config.yaml`:
+**`config.yaml`**
 
 ```yaml
 site_name: "My Site"
@@ -76,21 +59,53 @@ theme:
   include:
     - "dim"
     - "light"
+
+navigation:
+  - name: "Home"
+    url: "/"
+  - name: "Docs"
+    url: "/docs/"
 ```
 
-## Run the dev server
+**`assets/css/main.css`**
+
+```css
+@import "./generated.fonts.css";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "./generated.daisyui.css";
+```
+
+**`content/index.md`**
+
+```markdown
+---
+layout: page
+title: "Home"
+---
+
+# Hello!
+
+This site is built with mettu.
+```
+
+## 3. Start developing
+
+Run the dev server:
 
 ```bash
 npm run dev
 ```
 
-On first run, `mettu` creates a local `.venv/`, installs its Python requirements, generates your theme/font/syntax CSS, and starts Vite with live reload.
+On the first run, `mettu` creates `.venv/` in your project root and installs its Python dependencies (`Markdown`, `Jinja2`, `PyYAML`, `Pygments`, `python-dotenv`). After that, edits to `content/`, `templates/`, `assets/`, or `config.yaml` rebuild and reload automatically.
 
-When you're ready for production:
+## 4. Validate and build for production
+
+Before deploying, run the site validator and production build:
 
 ```bash
 npm run check
 npm run build
 ```
 
-Your static site is written to `dist/`.
+`npm run check` catches missing templates, duplicate URLs, broken internal links, and invalid YAML. `npm run build` outputs the final static site into `dist/`. You can inspect it locally with `npm run preview`.

@@ -1,82 +1,76 @@
 ---
 layout: docs
-title: "Writing Content"
+title: "Writing Content & Docs"
 section: "Authoring"
-order: 1
-description: "Frontmatter, automatic layout inference, callouts, tags, and table of contents."
+order: 2
+description: "Markdown extensions, syntax highlighting, GitHub-style callouts, Table of Contents, and documentation portals."
 ---
 
-Every `.md` file inside `content/` becomes a page in your site.
+`mettu` uses Python-Markdown under the hood, with Pygments for syntax highlighting and a few extra conveniences built in for technical writing and documentation sites.
 
-## Frontmatter
+## Markdown extensions
 
-Frontmatter is YAML at the top of a Markdown file, fenced by `---`:
+By default, `mettu` enables a sensible set of extensions: `fenced_code`, `codehilite`, `footnotes`, `tables`, `attr_list`, `sane_lists`, `md_in_html`, and `toc` (with `permalink: true`).
 
-```yaml
----
-layout: post
-title: "Hello World"
-date: 2026-11-13
-tags:
-  - notes
-  - ssg
-description: "A short summary for feeds and meta tags."
----
+You can customize the list in `config.yaml` under `markdown.extensions`. For example, adding `nl2br` turns single newlines into `<br>` tags, which is handy for poetry or short notes.
+
+Code blocks use standard fenced syntax with a language tag:
+
+````markdown
+```python
+def greet(name: str) -> str:
+    return f"Hello, {name}"
 ```
+````
 
-Common fields:
-
-| Field | Purpose |
-| :--- | :--- |
-| `layout` | Template name (without `.html`), e.g. `post`, `docs`, `page`. |
-| `title` | Page title. Inferred from the first `# Heading` or filename if omitted. |
-| `date` | Used for sorting collections and populating feeds. |
-| `order` | Numeric sort order when `date` is absent (used heavily in `docs`). |
-| `section` | Groups documentation pages in the left sidebar (`docs` layout). |
-| `tags` | List of tags. Generates `/tags/<slug>.html` and `{layout}_tags`. |
-| `permalink` | Custom output URL (e.g. `/about/` or `/404.html`). |
-| `draft` | Set `true` to exclude the page from builds. |
-| `feed` | Set `false` to exclude a dated page from RSS/Atom feeds. |
-| `theme` | Override the DaisyUI `data-theme` for a single page. |
-
-## Automatic inference
-
-You don't have to repeat boilerplate on every file:
-
-- **Title**: If `title` is omitted, `mettu` uses the first `# Heading` in the file, or falls back to a title-cased filename.
-- **Layout**: Defaults by directory (`posts/` → `post`, `docs/` → `docs`, otherwise `page`), configurable via `default_layout` / `default_layouts` in `config.yaml`.
-- **Reading time & excerpt**: `page.reading_time` and `page.excerpt` are computed automatically.
+Pygments highlights the block using the `syntax.pygments_theme` from `config.yaml`, and in the `docs` layout every code block automatically gets a one-click **Copy** button.
 
 ## GitHub-style callouts
 
-When using `layout: docs` (or any Markdown content), blockquotes starting with a tag render as styled alert boxes:
+Blockquotes starting with `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, or `[!CAUTION]` are automatically transformed into styled DaisyUI alerts:
 
 ```markdown
 > [!NOTE]
-> Useful background context.
+> Useful context that helps explain a detail.
 
 > [!TIP]
-> A helpful shortcut or best practice.
-
-> [!IMPORTANT]
-> Key information the reader shouldn't miss.
+> A practical shortcut or recommended pattern.
 
 > [!WARNING]
-> Something that could break if overlooked.
-
-> [!CAUTION]
-> High-risk action or destructive operation.
+> Something that can trip you up if you miss it.
 ```
+
+Here is how a tip renders:
+
+> [!TIP]
+> Callouts work in any Markdown file, not just `layout: docs`.
 
 ## Table of Contents
 
-Enable `toc` in `config.yaml` under `markdown.extensions`:
+When `toc` is enabled in `markdown.extensions`, `mettu` extracts headings for every page and exposes two fields on `page`:
+
+- `page.toc`: Ready-to-render HTML (`<ul>...</ul>`) that you can drop into any template with `{{ page.toc | safe }}`.
+- `page.toc_tokens`: Structured nested list of heading objects (`id`, `name`, `level`, `children`), used by `docs.html` for the right-hand "On this page" sidebar and by `search-index.json` so headings are searchable.
+
+## Building a documentation portal
+
+To create a docs section like this site:
+
+1. Put your Markdown files in `content/docs/` (or set `layout: docs` in frontmatter).
+2. Group pages with `section:` and sort them with `order:`:
 
 ```yaml
-markdown:
-  extensions:
-    - toc:
-        permalink: true
+---
+layout: docs
+title: "Configuration"
+section: "Reference"
+order: 1
+---
 ```
 
-`mettu` populates both `page.toc` (rendered HTML list) and `page.toc_tokens` (structured heading tree used by `docs.html` and `/search-index.json`).
+`mettu` automatically builds:
+
+- The left sidebar tree (`docs_tree`) grouped by `section` and ordered by `order`.
+- Breadcrumbs (`page.breadcrumbs`).
+- Sequential **Previous / Next** pagination links (`page.prev_page`, `page.next_page`).
+- Instant client-side search (`Ctrl+K` / `Cmd+K`) backed by `/search-index.json`, indexing titles, sections, tags, headings, and excerpts.

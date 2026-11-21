@@ -6,33 +6,72 @@ order: 2
 description: "Override built-in Jinja2 templates, build custom layouts, and use dynamic collection variables."
 ---
 
-`mettu` uses Jinja2 with a `ChoiceLoader` that checks your site's `templates/` directory first and falls back to `mettu`'s built-in templates.
+`mettu` renders every page with Jinja2 using a `ChoiceLoader`: it checks your site's `templates/` folder first, and falls back to the built-in templates shipped inside `@andy34g7/mettu`.
 
-## Overriding vs. inheriting
+## Override only what you customize
 
-You only need to create files in `templates/` for layouts you want to customize:
+You do not need to copy all of `mettu`'s templates into your repo. Create a `templates/` directory only for files you want to override or add:
 
 ```text
 my-site/
 └── templates/
-    ├── blog.html       # Overrides built-in blog.html
-    └── music.html      # Adds a brand-new custom layout
+    ├── base.html        # Overrides mettu's base layout
+    ├── blog.html        # Overrides the blog index
+    ├── til.html         # New custom layout for Today I Learned entries
+    └── til_list.html    # New index layout for /til/
 ```
 
-Built-in templates you don't override (`base.html`, `docs.html`, `page.html`, `post.html`, `tags.html`, `feed.xml.j2`, `sitemap.xml.j2`) are inherited directly from `@andy34g7/mettu`.
+Any template you do not override (`docs.html`, `page.html`, `post.html`, `tags.html`, `feed.xml.j2`, `sitemap.xml.j2`) is inherited automatically from `@andy34g7/mettu`, so you get improvements whenever you run `npm update @andy34g7/mettu`.
 
 ## Context variables
 
 Every template receives:
 
-- `site` — Parsed `config.yaml` dictionary.
-- `page` — Current page's frontmatter + inferred fields (`url`, `title`, `reading_time`, `excerpt`, `toc`, `toc_tokens`, `breadcrumbs`, `prev_page`, `next_page`).
-- `content` — Rendered HTML body (render with `{{ content | safe }}`).
-- **Dynamic collections**: For every `layout: <name>` used in `content/`, `mettu` exposes:
-  - `<name>s` (e.g., `posts`, `docs`, `tils`) — List of pages sorted by `date` (newest first) or `order` (ascending). Hyphens become underscores (`my-note` → `my_notes`).
-  - `<name>_tags` (e.g., `post_tags`, `til_tags`) — Sorted list of unique tags used in that layout.
-- `all_tags` — Dictionary mapping each tag name to its list of pages.
-- `docs_tree` — Hierarchical section tree for `layout: docs`.
+| Variable | Description |
+| :--- | :--- |
+| `site` | The parsed `config.yaml` dictionary. |
+| `page` | Current page's frontmatter plus computed fields (`url`, `title`, `reading_time`, `excerpt`, `toc`, `toc_tokens`, `breadcrumbs`, `prev_page`, `next_page`). |
+| `content` | Rendered HTML body of the Markdown file. Always render with `{{ content | safe }}`. |
+| `<layout>s` | Dynamic list of all pages using `layout: <layout>` (for example `posts`, `tils`, `docs`). Hyphens become underscores (`my-note` becomes `my_notes`). Sorted by `date` (newest first) or `order` (ascending). |
+| `<layout>_tags` | Sorted list of unique tags used across pages of that layout (for example `post_tags`, `til_tags`). |
+| `all_tags` | Dictionary mapping every tag string to its list of pages (`{tag: [page, ...]}`). |
+| `docs_tree` | Grouped section tree for `layout: docs`. |
 
-> [!NOTE]
-> Jinja2 `autoescape` is enabled for `.html`, `.htm`, `.xml`, and `.j2` templates. If a frontmatter field intentionally contains HTML (such as a `<br>`), render it with `| safe`.
+## Example: adding a custom "TIL" section
+
+Suppose you want a `/til/` section with its own tag filter bar:
+
+1. Create `templates/til.html` for individual entries (extending `base.html`).
+2. Create `templates/til_list.html` for the index page at `content/til/index.md` (`layout: til_list`):
+
+```html
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-4xl font-bold mb-6">{{ page.title }}</h1>
+
+{% if til_tags %}
+<div class="flex flex-wrap gap-2 mb-6">
+  {% for tag in til_tags %}
+  <span class="badge badge-outline">{{ tag }}</span>
+  {% endfor %}
+</div>
+{% endif %}
+
+<ul class="space-y-4">
+  {% for item in tils %}
+  <li>
+    <a href="{{ item.url }}/" class="link link-primary font-semibold">{{ item.title }}</a>
+    <span class="text-sm opacity-60 ml-2">{{ item.date }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
+```
+
+3. Add Markdown files in `content/til/` with `layout: til` and `date:` / `tags:`. `mettu` automatically populates `tils` and `til_tags` without any Python changes.
+
+## Watch out for Jinja2 autoescape
+
+> [!WARNING]
+> `mettu` enables Jinja2 `autoescape` for `.html`, `.htm`, `.xml`, and `.j2` files. That prevents accidental XSS, but it also means any frontmatter string containing raw HTML (like `<br>` in a subtitle) will be escaped unless you explicitly write `{{ page.hero_subtitle | safe }}`.

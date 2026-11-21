@@ -1,16 +1,19 @@
 ---
 layout: page
 title: "mettu"
-description: "A fast, hybrid Python + Vite static site generator."
+description: "A hybrid Python and Vite static site generator for personal sites, blogs, and docs."
 ---
 
 # mettu
 
-**mettu** is a static site generator that pairs a **Python** content engine (Markdown, Jinja2, Pygments, Atom/RSS feeds, sitemaps) with **Vite** (Tailwind CSS v4, DaisyUI v5, Sharp image optimization, and instant HMR).
+`mettu` is a static site generator built with Python and Vite. The goal is not to chase synthetic benchmarks, it is to make building and maintaining a static site genuinely pleasant: write Markdown, get Tailwind CSS v4 and DaisyUI v5 out of the box, see changes live while editing, and deploy plain static files.
 
-Write Markdown in `content/`, configure your site in `config.yaml`, and ship static HTML from `dist/`.
+Everything lives in one installable package (`@andy34g7/mettu`), so your site repository only holds your content, `config.yaml`, assets, and any templates you want to customize.
 
-- [Read the Preface](/docs/) — Understand what `mettu` does and how the build pipeline works.
-- [Getting Started](/docs/getting-started/) — Set up a new site with `@andy34g7/mettu` in a few minutes.
-- [Configuration](/docs/configuration/) — Customize themes, fonts, navigation, feeds, and Markdown extensions.
-- [Templates & Layouts](/docs/templates-and-layouts/) — Override built-in templates or add your own collections.
+### Start here
+
+- [Preface](/docs/): What `mettu` is, why it uses Python and Vite together, and how a build actually runs.
+- [Getting Started](/docs/getting-started/): Install `@andy34g7/mettu`, set up the minimal files, and run your first dev server.
+- [Project Structure](/docs/project-structure/): What every folder does, what gets generated, and what belongs in git.
+- [Configuration](/docs/configuration/): Full `config.yaml` walkthrough for themes, fonts, syntax highlighting, Markdown, and feeds.
+- [Templates & Layouts](/docs/templates-and-layouts/): Override built-in Jinja2 templates or build custom sections with dynamic collections.
