@@ -55,6 +55,15 @@ h6:hover .headerlink {
   content: none;
 }
 
+/* Ensure inline code inside colored alert/callout boxes stays high-contrast */
+.prose .alert :not(pre) > code {
+  color: inherit;
+  background-color: color-mix(in oklab, currentColor 12%, transparent);
+  border-color: color-mix(in oklab, currentColor 22%, transparent);
+  padding: 0.1em 0.35em;
+  border-radius: 0.3rem;
+}
+
 /* Rounded code blocks and always-legible Copy button (dark + light mode) */
 .prose .highlight,
 .prose .codehilite {
